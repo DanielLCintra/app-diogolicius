@@ -1,5 +1,7 @@
 <template>
   <v-card>
+    <add-link-modal :dialog="dialog" />
+
     <v-card-title>
       <h3 class="headline mb-0">
         Diogolicius
@@ -29,10 +31,14 @@
 
           <v-flex xs2>
             <v-btn
-              class="elevation-0 white"
-              flat
+              fab
+              dark
+              color="indigo"
+              @click="dialog = true"
             >
-              Adicionar
+              <v-icon dark>
+                add
+              </v-icon>
             </v-btn>
           </v-flex>
 
@@ -102,8 +108,14 @@
 </template>
 
 <script>
+import AddLinkModal from './addLink'
+
 export default {
   name: 'Home',
+
+  components: {
+    AddLinkModal
+  },
 
   data: () => ({
     search: null,
@@ -114,7 +126,8 @@ export default {
       { text: '', value: '', align: 'right' }
     ],
     linksCollection: [],
-    loading: false
+    loading: false,
+    dialog: false
   }),
 
   created() {
@@ -126,8 +139,11 @@ export default {
       this.loading = true
       this.$db.ref().on('value', (snapshot) => {
         this.linksCollection = snapshot.val().bookmarks
-        this.loading = false
       })
+
+      setTimeout(() => {
+        this.loading = false
+      }, 3000)
     }
   }
 }

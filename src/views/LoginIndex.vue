@@ -108,10 +108,12 @@ export default {
     loading: false,
     notificationMessage: {
       message: 'Preencha os dados para fazer login'
-    }
+    },
+    loggedUser: null
   }),
 
   created() {
+    this.$auth.signOut()
     setTimeout(() => {
       this.notificationMessage = []
     }, 3000)
@@ -119,8 +121,10 @@ export default {
 
   mounted() {
     this.$auth.onAuthStateChanged((user) => {
-      console.log('chegou aqui!')
+      this.loggedUser = user
+      console.log('usuário deslogado')
       if (user) {
+        console.log('usuário logado')
         this.$router.push({ name: 'home' })
       }
     })
@@ -131,10 +135,10 @@ export default {
       this.loading = true
       const { email, password } = this.person
       this.$auth.signInWithEmailAndPassword(email, password)
-        .then((response) => {
-          console.log(response)
+        .then(() => {
           this.notificate('Login realizado com sucesso.')
           this.loading = false
+          this.$router.push({ name: 'home' })
         })
         .catch(({ code, message }) => {
           this.notificate(`${code} - ${message}`)

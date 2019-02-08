@@ -15,15 +15,10 @@ const DB = connection.database()
 const AUTH = connection.auth()
 
 export default function install(Vue, { router }) {
-  router.beforeEach((to, from, next) => {
-    const user = AUTH.currentUser
-
-    if (!user && to.name !== 'auth.index') {
-      next({ name: 'auth.index' })
-      return
+  AUTH.onAuthStateChanged((user) => {
+    if (!user) {
+      router.push({ name: 'auth.index' })
     }
-
-    next()
   })
 
   Object.defineProperties(Vue.prototype, {
